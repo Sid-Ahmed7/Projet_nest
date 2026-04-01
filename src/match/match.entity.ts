@@ -5,7 +5,7 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { MatchStatus } from './enum/match-status-enum';
+import { MatchStatus } from './enum/match-status.enum';
 import { Tournament } from 'src/tournament/tournament.entity';
 import { Player } from 'src/player/player.entity';
 

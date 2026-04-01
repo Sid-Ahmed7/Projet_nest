@@ -24,6 +24,9 @@ export class Player {
   @Column()
   password: string;
 
+  @Column({ type: 'varchar', nullable: true })
+  refreshToken: string | null;
+
   @Column({ nullable: true })
   avatar: string;
 
