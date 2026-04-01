@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { Column, CreateDateColumn, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { TournamentStatus } from "./enum/tournament-status";
+import { TournamentStatus } from "./enum/tournament-status.enum";
 import { Game } from "src/game/game.entity";
 import { Player } from "src/player/player.entity";
 import { Match } from "src/match/match.entity";

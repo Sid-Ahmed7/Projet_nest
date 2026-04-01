@@ -7,12 +7,12 @@ import { TournamentModule } from './tournament/tournament.module';
 import { PlayerModule } from './player/player.module';
 import { MatchModule } from './match/match.module';
 import { GameModule } from './game/game.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: `.env.${process.env.NODE_ENV ?? 'development'}`,
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
@@ -20,7 +20,7 @@ import { GameModule } from './game/game.module';
       useFactory: (config: ConfigService) => ({
         type: 'postgres',
         host: config.get('DB_HOST'),
-        port: Number.parseInt(config.get<string>('DB_PORT')!, 10),
+        port: Number.parseInt(config.get<string>('DB_PORT')!),
         username: config.get('DB_USERNAME'),
         password: config.get('DB_PASSWORD'),
         database: config.get('DB_NAME'),
@@ -32,6 +32,7 @@ import { GameModule } from './game/game.module';
     PlayerModule,
     MatchModule,
     GameModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
