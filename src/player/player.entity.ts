@@ -14,40 +14,40 @@ import { Exclude } from 'class-transformer';
 @Entity('players')
 export class Player {
   @PrimaryGeneratedColumn('uuid')
-  playerId: string;
+  playerId!: string;
 
   @Column({ unique: true })
-  username: string;
+  username!: string;
 
   @Column({ unique: true })
-  email: string;
+  email!: string;
 
   @Exclude()
   @Column()
-  password: string;
+  password!: string;
 
   @Exclude()
   @Column({ type: 'varchar', nullable: true })
-  refreshToken: string | null;
+  refreshToken!: string | null;
 
   @Column({ nullable: true })
-  avatar: string;
+  avatar!: string;
 
   @Column({ type: 'varchar', default: Role.PLAYER })
-  role: Role;
+  role!: Role;
 
   @CreateDateColumn()
-  createdAt: Date;
+  createdAt!: Date;
 
   @ManyToMany(() => Tournament, (tournament) => tournament.players)
-  tournaments: Tournament[];
+  tournaments!: Tournament[];
 
   @OneToMany(() => Match, (match) => match.firstPlayer)
-  firstPlayer: Match[];
+  firstPlayer!: Match[];
 
   @OneToMany(() => Match, (match) => match.secondPlayer)
-  secondPlayer: Match[];
+  secondPlayer!: Match[];
 
   @OneToMany(() => Match, (match) => match.winner)
-  winner: Match[];
+  winner!: Match[];
 }

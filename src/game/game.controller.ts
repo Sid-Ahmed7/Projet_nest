@@ -1,7 +1,10 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
+  HttpCode,
+  HttpStatus,
   Param,
   ParseUUIDPipe,
   Post,
@@ -18,20 +21,20 @@ import { CreateGameRequest } from './requests/CreateGameRequest';
 import { UpdateGameRequest } from './requests/UpdateGameRequest';
 import { ResponseMessage } from 'src/decorator/response-message.decorator';
 
-@Controller('game')
+@Controller('games')
 export class GameController {
   constructor(private readonly gameService: GameService) {}
 
   @Get()
   @ResponseMessage('Games retrieved successfully')
-  findAll() {
-    return this.gameService.findAll();
+  findAllGames() {
+    return this.gameService.findAllGames();
   }
 
   @Get(':gameId')
   @ResponseMessage('Game retrieved successfully')
-  findOne(@Param('gameId', ParseUUIDPipe) gameId: string) {
-    return this.gameService.findOne(gameId);
+  findGameById(@Param('gameId', ParseUUIDPipe) gameId: string) {
+    return this.gameService.findGameById(gameId);
   }
 
   @UseGuards(JwtGuard, RolesGuard)
@@ -55,7 +58,8 @@ export class GameController {
 
   @UseGuards(JwtGuard, RolesGuard)
   @Roles(Role.ADMIN)
-  @Post(':gameId/delete')
+  @Delete(':gameId')
+  @HttpCode(HttpStatus.NO_CONTENT)
   @ResponseMessage('Game deleted successfully')
   deleteGame(@Param('gameId', ParseUUIDPipe) gameId: string) {
     return this.gameService.deleteGame(gameId);

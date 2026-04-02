@@ -2,14 +2,14 @@ import { IsDateString, IsString } from 'class-validator';
 
 export class CreateGameRequest {
   @IsString()
-  name: string;
+  name!: string;
 
   @IsString()
-  publisher: string;
+  publisher!: string;
 
   @IsDateString()
-  releaseDate: Date;
+  releaseDate!: Date;
 
   @IsString()
-  genre: string;
+  genre!: string;
 }

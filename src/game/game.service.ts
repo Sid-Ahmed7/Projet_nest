@@ -12,11 +12,11 @@ export class GameService {
     private readonly gameRepository: Repository<Game>,
   ) {}
 
-  async findAll(): Promise<Game[]> {
+  async findAllGames(): Promise<Game[]> {
     return this.gameRepository.find();
   }
 
-  async findOne(gameId: string): Promise<Game> {
+  async findGameById(gameId: string): Promise<Game> {
     const game = await this.gameRepository.findOne({ where: { gameId } });
     if (!game) {
       throw new NotFoundException('Game not found');
@@ -30,13 +30,13 @@ export class GameService {
   }
 
   async updateGame(gameId: string, data: UpdateGameRequest): Promise<Game> {
-    const game = await this.findOne(gameId);
+    const game = await this.findGameById(gameId);
     Object.assign(game, data);
     return this.gameRepository.save(game);
   }
 
   async deleteGame(gameId: string): Promise<void> {
-    const game = await this.findOne(gameId);
+    const game = await this.findGameById(gameId);
     await this.gameRepository.remove(game);
   }
 }

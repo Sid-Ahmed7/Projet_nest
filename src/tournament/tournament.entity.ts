@@ -9,31 +9,30 @@ import { Match } from "src/match/match.entity";
 export class Tournament {
 
     @PrimaryGeneratedColumn('uuid')
-    tournamentId: string;
+    tournamentId!: string;
 
     @Column()
-    name: string;
+    name!: string;
 
     @Column()
-    maxPlayers: number;
+    maxPlayers!: number;
 
     @Column({ type: 'timestamp' })
-    startDate: Date;
+    startDate!: Date;
 
     @Column({ type: 'varchar', default: TournamentStatus.PENDING })
-    status: TournamentStatus;
+    status!: TournamentStatus;
 
     @CreateDateColumn()
-    createdAt: Date;
+    createdAt!: Date;
 
     @ManyToOne(() => Game, (game) => game.tournaments, { eager: true })
-    @JoinTable()
-    game: Game;
+    game!: Game;
 
     @ManyToMany(() => Player, (player) => player.tournaments)
     @JoinTable({ name: 'tournament_players' })
-    players: Player[];
+    players!: Player[];
 
     @OneToMany(() => Match, (match) => match.tournament)
-    matches: Match[];
+    matches!: Match[];
 }

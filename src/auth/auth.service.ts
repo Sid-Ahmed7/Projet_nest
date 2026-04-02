@@ -36,7 +36,7 @@ export class AuthService {
   }
 
   async refresh(playerId: string, token: string): Promise<JwtPayload> {
-    const player = await this.playerService.findOne(playerId);
+    const player = await this.playerService.findPlayerById(playerId);
 
     if (!player.refreshToken)
       throw new UnauthorizedException('No refresh token');

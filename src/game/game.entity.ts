@@ -4,20 +4,20 @@ import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 @Entity('games')
 export class Game {
   @PrimaryGeneratedColumn('uuid')
-  gameId: string;
+  gameId!: string;
 
   @Column()
-  name: string;
+  name!: string;
 
   @Column()
-  publisher: string;
+  publisher!: string;
 
   @Column({ type: 'timestamp' })
-  releaseDate: Date;
+  releaseDate!: Date;
 
   @Column()
-  genre: string;
+  genre!: string;
 
   @OneToMany(() => Tournament, (tournament) => tournament.game)
-  tournaments: Tournament[];
+  tournaments!: Tournament[];
 }
