@@ -9,6 +9,7 @@ import {
 import { Role } from './enum/role.enum';
 import { Tournament } from 'src/tournament/tournament.entity';
 import { Match } from 'src/match/match.entity';
+import { Exclude } from 'class-transformer';
 
 @Entity('players')
 export class Player {
@@ -21,9 +22,11 @@ export class Player {
   @Column({ unique: true })
   email: string;
 
+  @Exclude()
   @Column()
   password: string;
 
+  @Exclude()
   @Column({ type: 'varchar', nullable: true })
   refreshToken: string | null;
 
