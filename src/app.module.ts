@@ -8,6 +8,7 @@ import { PlayerModule } from './player/player.module';
 import { MatchModule } from './match/match.module';
 import { GameModule } from './game/game.module';
 import { AuthModule } from './auth/auth.module';
+import { SeederModule } from './seeder/seeder.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { AuthModule } from './auth/auth.module';
     MatchModule,
     GameModule,
     AuthModule,
+    SeederModule,
   ],
   controllers: [AppController],
   providers: [AppService],
