@@ -1,18 +1,11 @@
-import {
-  Body,
-  Controller,
-  Post,
-  Request,
-  UseGuards,
-  ValidationPipe,
-} from '@nestjs/common';
+import { Body, Controller, Post, Request, UseGuards, ValidationPipe } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { Player } from 'src/player/player.entity';
+import { Player } from '@/player/player.entity';
 import { AuthService } from './auth.service';
 import { RegisterRequest } from './requests/register-request';
 import { JwtRefreshGuard } from './guards/jwt-refresh.guard';
 import type { RefreshTokenPayload } from './interfaces/jwt.interface';
-import { ResponseMessage } from 'src/decorator/response-message.decorator';
+import { ResponseMessage } from '@/decorator/response-message.decorator';
 
 @Controller('auth')
 export class AuthController {

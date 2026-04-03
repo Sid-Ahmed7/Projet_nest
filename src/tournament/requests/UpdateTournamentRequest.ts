@@ -1,12 +1,5 @@
-import {
-  IsString,
-  IsOptional,
-  IsInt,
-  Min,
-  IsDateString,
-  IsEnum,
-} from 'class-validator';
-import { TournamentStatus } from '../enum/tournament-status.enum';
+import { IsString, IsOptional, IsInt, Min, IsDateString, IsEnum } from 'class-validator';
+import { TournamentStatus } from '@/tournament/enum/tournament-status.enum';
 
 export class UpdateTournamentRequest {
   @IsString()

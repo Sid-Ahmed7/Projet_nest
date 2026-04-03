@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { MatchController } from './match.controller';
+import { MatchController } from '@/match/match.controller';
 
 describe('MatchController', () => {
   let controller: MatchController;

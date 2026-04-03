@@ -11,14 +11,14 @@ import {
   UseGuards,
   ValidationPipe,
 } from '@nestjs/common';
-import { PlayerService } from './player.service';
-import { ChangePasswordRequest } from './requests/ChangePasswordRequest';
-import { UpdatePlayerRequest } from './requests/UpdatePlayerRequest';
-import { ResponseMessage } from 'src/decorator/response-message.decorator';
-import { JwtGuard } from 'src/auth/guards/jwt.guard';
-import { RolesGuard } from 'src/auth/guards/roles.guard';
-import { Roles } from 'src/decorator/role.decorator';
-import { Role } from './enum/role.enum';
+import { PlayerService } from '@/player/player.service';
+import { ChangePasswordRequest } from '@/player/requests/ChangePasswordRequest';
+import { UpdatePlayerRequest } from '@/player/requests/UpdatePlayerRequest';
+import { ResponseMessage } from '@/decorator/response-message.decorator';
+import { JwtGuard } from '@/auth/guards/jwt.guard';
+import { RolesGuard } from '@/auth/guards/roles.guard';
+import { Roles } from '@/decorator/role.decorator';
+import { Role } from '@/player/enum/role.enum';
 
 @Controller('players')
 export class PlayerController {
@@ -38,9 +38,7 @@ export class PlayerController {
 
   @Get(':playerId/tournaments')
   @ResponseMessage('Player tournaments retrieved successfully')
-  async findTournamentsByPlayer(
-    @Param('playerId', ParseUUIDPipe) playerId: string,
-  ) {
+  async findTournamentsByPlayer(@Param('playerId', ParseUUIDPipe) playerId: string) {
     return this.playerService.findTournamentsByPlayer(playerId);
   }
 

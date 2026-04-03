@@ -1,9 +1,9 @@
 /* eslint-disable prettier/prettier */
 import { Column, CreateDateColumn, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { TournamentStatus } from "./enum/tournament-status.enum";
-import { Game } from "src/game/game.entity";
-import { Player } from "src/player/player.entity";
-import { Match } from "src/match/match.entity";
+import { Game } from "@/game/game.entity";
+import { Player } from "@/player/player.entity";
+import { Match } from "@/match/match.entity";
 
 @Entity('tournaments')
 export class Tournament {

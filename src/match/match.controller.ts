@@ -1,15 +1,7 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Param,
-  ParseUUIDPipe,
-  Post,
-  ValidationPipe,
-} from '@nestjs/common';
-import { MatchService } from './match.service';
-import { CreateMatchRequest } from './requests/CreateMatchRequest';
-import { SubmitMatchResultRequest } from './requests/SubmitMatchResultRequest';
+import { Body, Controller, Get, Param, ParseUUIDPipe, Post, ValidationPipe } from '@nestjs/common';
+import { MatchService } from '@/match/match.service';
+import { CreateMatchRequest } from '@/match/requests/CreateMatchRequest';
+import { SubmitMatchResultRequest } from '@/match/requests/SubmitMatchResultRequest';
 
 @Controller('matches')
 export class MatchController {

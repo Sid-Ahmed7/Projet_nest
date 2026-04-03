@@ -13,13 +13,13 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { GameService } from './game.service';
-import { JwtGuard } from 'src/auth/guards/jwt.guard';
-import { RolesGuard } from 'src/auth/guards/roles.guard';
-import { Roles } from 'src/decorator/role.decorator';
-import { Role } from 'src/player/enum/role.enum';
+import { JwtGuard } from '@/auth/guards/jwt.guard';
+import { RolesGuard } from '@/auth/guards/roles.guard';
+import { Roles } from '@/decorator/role.decorator';
+import { Role } from '@/player/enum/role.enum';
 import { CreateGameRequest } from './requests/CreateGameRequest';
 import { UpdateGameRequest } from './requests/UpdateGameRequest';
-import { ResponseMessage } from 'src/decorator/response-message.decorator';
+import { ResponseMessage } from '@/decorator/response-message.decorator';
 
 @Controller('games')
 export class GameController {
@@ -49,10 +49,7 @@ export class GameController {
   @Roles(Role.ADMIN)
   @Put(':gameId')
   @ResponseMessage('Game updated successfully')
-  updateGame(
-    @Param('gameId', ParseUUIDPipe) gameId: string,
-    @Body(ValidationPipe) request: UpdateGameRequest,
-  ) {
+  updateGame(@Param('gameId', ParseUUIDPipe) gameId: string, @Body(ValidationPipe) request: UpdateGameRequest) {
     return this.gameService.updateGame(gameId, request);
   }
 

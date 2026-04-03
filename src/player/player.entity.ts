@@ -1,14 +1,7 @@
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  ManyToMany,
-  OneToMany,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
-import { Role } from './enum/role.enum';
-import { Tournament } from 'src/tournament/tournament.entity';
-import { Match } from 'src/match/match.entity';
+import { Column, CreateDateColumn, Entity, ManyToMany, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Role } from '@/player/enum/role.enum';
+import { Tournament } from '@/tournament/tournament.entity';
+import { Match } from '@/match/match.entity';
 import { Exclude } from 'class-transformer';
 
 @Entity('players')
@@ -39,7 +32,7 @@ export class Player {
   @CreateDateColumn()
   createdAt!: Date;
 
-  @ManyToMany(() => Tournament, (tournament) => tournament.players)
+  @ManyToMany(() => Tournament, (tournament) => tournament.players as Player[])
   tournaments!: Tournament[];
 
   @OneToMany(() => Match, (match) => match.firstPlayer)

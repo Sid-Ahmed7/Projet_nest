@@ -1,13 +1,7 @@
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
-import { MatchStatus } from './enum/match-status.enum';
-import { Tournament } from 'src/tournament/tournament.entity';
-import { Player } from 'src/player/player.entity';
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { MatchStatus } from '@/match/enum/match-status.enum';
+import { Tournament } from '@/tournament/tournament.entity';
+import { Player } from '@/player/player.entity';
 
 @Entity('matches')
 export class Match {
@@ -23,7 +17,7 @@ export class Match {
   @Column({ type: 'varchar', default: MatchStatus.PENDING })
   status!: MatchStatus;
 
-  @ManyToOne(() => Tournament, (tournament) => tournament.matches)
+  @ManyToOne(() => Tournament, (tournament) => tournament.matches as Match[])
   @JoinColumn()
   tournament!: Tournament;
 

@@ -1,16 +1,12 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Match } from './match.entity';
-import { Player } from 'src/player/player.entity';
-import { Tournament } from 'src/tournament/tournament.entity';
-import { MatchStatus } from './enum/match-status.enum';
-import { CreateMatchRequest } from './requests/CreateMatchRequest';
-import { SubmitMatchResultRequest } from './requests/SubmitMatchResultRequest';
+import { Match } from '@/match/match.entity';
+import { Player } from '@/player/player.entity';
+import { Tournament } from '@/tournament/tournament.entity';
+import { MatchStatus } from '@/match/enum/match-status.enum';
+import { CreateMatchRequest } from '@/match/requests/CreateMatchRequest';
+import { SubmitMatchResultRequest } from '@/match/requests/SubmitMatchResultRequest';
 
 @Injectable()
 export class MatchService {
@@ -75,10 +71,7 @@ export class MatchService {
     return this.matchRepository.save(match);
   }
 
-  async submitResult(
-    matchId: string,
-    data: SubmitMatchResultRequest,
-  ): Promise<Match> {
+  async submitResult(matchId: string, data: SubmitMatchResultRequest): Promise<Match> {
     const match = await this.findOne(matchId);
 
     if (match.status === MatchStatus.COMPLETED) {
@@ -92,13 +85,9 @@ export class MatchService {
       throw new NotFoundException(`Player ${data.winnerId} not found`);
     }
 
-    const isParticipant =
-      match.firstPlayer.playerId === data.winnerId ||
-      match.secondPlayer.playerId === data.winnerId;
+    const isParticipant = match.firstPlayer.playerId === data.winnerId || match.secondPlayer.playerId === data.winnerId;
     if (!isParticipant) {
-      throw new BadRequestException(
-        'Winner must be a participant of the match',
-      );
+      throw new BadRequestException('Winner must be a participant of the match');
     }
 
     match.winner = winner;

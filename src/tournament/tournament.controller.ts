@@ -14,12 +14,12 @@ import {
   UseGuards,
   ValidationPipe,
 } from '@nestjs/common';
-import { JwtGuard } from 'src/auth/guards/jwt.guard';
-import { ResponseMessage } from 'src/decorator/response-message.decorator';
-import { TournamentStatus } from './enum/tournament-status.enum';
-import { CreateTournamentRequest } from './requests/CreateTournamentRequest';
-import { UpdateTournamentRequest } from './requests/UpdateTournamentRequest';
-import { TournamentService } from './tournament.service';
+import { JwtGuard } from '@/auth/guards/jwt.guard';
+import { ResponseMessage } from '@/decorator/response-message.decorator';
+import { TournamentStatus } from '@/tournament/enum/tournament-status.enum';
+import { CreateTournamentRequest } from '@/tournament/requests/CreateTournamentRequest';
+import { UpdateTournamentRequest } from '@/tournament/requests/UpdateTournamentRequest';
+import { TournamentService } from '@/tournament/tournament.service';
 
 @Controller('tournaments')
 export class TournamentController {
@@ -33,9 +33,7 @@ export class TournamentController {
 
   @Get(':tournamentId')
   @ResponseMessage('Tournament retrieved successfully')
-  findTournamentById(
-    @Param('tournamentId', ParseUUIDPipe) tournamentId: string,
-  ) {
+  findTournamentById(@Param('tournamentId', ParseUUIDPipe) tournamentId: string) {
     return this.tournamentsService.findTournamentById(tournamentId);
   }
 
@@ -71,17 +69,12 @@ export class TournamentController {
     @Param('tournamentId', ParseUUIDPipe) tournamentId: string,
     @Request() req: { user: { playerId: string } },
   ) {
-    return this.tournamentsService.joinTournament(
-      tournamentId,
-      req.user.playerId,
-    );
+    return this.tournamentsService.joinTournament(tournamentId, req.user.playerId);
   }
 
   @Get(':tournamentId/matches')
   @ResponseMessage('Matches retrieved successfully')
-  findMatchesByTournament(
-    @Param('tournamentId', ParseUUIDPipe) tournamentId: string,
-  ) {
+  findMatchesByTournament(@Param('tournamentId', ParseUUIDPipe) tournamentId: string) {
     return this.tournamentsService.findMatchesByTournament(tournamentId);
   }
 }

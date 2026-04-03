@@ -1,16 +1,12 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Tournament } from './tournament.entity';
+import { Tournament } from '@/tournament/tournament.entity';
 import { Repository } from 'typeorm';
-import { Game } from 'src/game/game.entity';
-import { Player } from 'src/player/player.entity';
-import { TournamentStatus } from './enum/tournament-status.enum';
-import { CreateTournamentRequest } from './requests/CreateTournamentRequest';
-import { UpdateTournamentRequest } from './requests/UpdateTournamentRequest';
+import { Game } from '@/game/game.entity';
+import { Player } from '@/player/player.entity';
+import { TournamentStatus } from '@/tournament/enum/tournament-status.enum';
+import { CreateTournamentRequest } from '@/tournament/requests/CreateTournamentRequest';
+import { UpdateTournamentRequest } from '@/tournament/requests/UpdateTournamentRequest';
 
 @Injectable()
 export class TournamentService {
@@ -58,10 +54,7 @@ export class TournamentService {
     return this.tournamentRepository.save(tournament);
   }
 
-  async updateTournament(
-    tournamentId: string,
-    data: UpdateTournamentRequest,
-  ): Promise<Tournament> {
+  async updateTournament(tournamentId: string, data: UpdateTournamentRequest): Promise<Tournament> {
     const tournament = await this.findTournamentById(tournamentId);
     const { startDate, ...rest } = data;
     Object.assign(tournament, rest);
@@ -76,10 +69,7 @@ export class TournamentService {
     await this.tournamentRepository.remove(tournament);
   }
 
-  async joinTournament(
-    tournamentId: string,
-    playerId: string,
-  ): Promise<Tournament> {
+  async joinTournament(tournamentId: string, playerId: string): Promise<Tournament> {
     const tournament = await this.findTournamentById(tournamentId);
     const player = await this.playerRepository.findOne({
       where: { playerId },
@@ -92,9 +82,7 @@ export class TournamentService {
       throw new BadRequestException('Tournament is not open for registration');
     }
 
-    const alreadyJoined = tournament.players.some(
-      (p) => p.playerId === playerId,
-    );
+    const alreadyJoined = tournament.players.some((p) => p.playerId === playerId);
     if (alreadyJoined) {
       throw new BadRequestException('Already joined');
     }
@@ -110,12 +98,7 @@ export class TournamentService {
   async findMatchesByTournament(tournamentId: string) {
     const tournament = await this.tournamentRepository.findOne({
       where: { tournamentId },
-      relations: [
-        'matches',
-        'matches.firstPlayer',
-        'matches.secondPlayer',
-        'matches.winner',
-      ],
+      relations: ['matches', 'matches.firstPlayer', 'matches.secondPlayer', 'matches.winner'],
     });
     if (!tournament) {
       throw new NotFoundException(`Tournament ${tournamentId} not found`);

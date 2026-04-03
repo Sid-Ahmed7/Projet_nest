@@ -1,4 +1,4 @@
-import { Role } from 'src/player/enum/role.enum';
+import { Role } from '@/player/enum/role.enum';
 
 export interface Jwt {
   sub: string;

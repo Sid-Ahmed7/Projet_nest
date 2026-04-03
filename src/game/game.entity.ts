@@ -1,4 +1,4 @@
-import { Tournament } from 'src/tournament/tournament.entity';
+import { Tournament } from '@/tournament/tournament.entity';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('games')
@@ -18,6 +18,6 @@ export class Game {
   @Column()
   genre!: string;
 
-  @OneToMany(() => Tournament, (tournament) => tournament.game)
+  @OneToMany(() => Tournament, (tournament) => tournament.game as Game)
   tournaments!: Tournament[];
 }
