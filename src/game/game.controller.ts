@@ -20,7 +20,9 @@ import { Role } from '@/player/enum/role.enum';
 import { CreateGameRequest } from './requests/CreateGameRequest';
 import { UpdateGameRequest } from './requests/UpdateGameRequest';
 import { ResponseMessage } from '@/decorator/response-message.decorator';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Games')
 @Controller('games')
 export class GameController {
   constructor(private readonly gameService: GameService) {}

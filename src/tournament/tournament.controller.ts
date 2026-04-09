@@ -20,7 +20,9 @@ import { TournamentStatus } from '@/tournament/enum/tournament-status.enum';
 import { CreateTournamentRequest } from '@/tournament/requests/CreateTournamentRequest';
 import { UpdateTournamentRequest } from '@/tournament/requests/UpdateTournamentRequest';
 import { TournamentService } from '@/tournament/tournament.service';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Tournaments')
 @Controller('tournaments')
 export class TournamentController {
   constructor(private readonly tournamentsService: TournamentService) {}

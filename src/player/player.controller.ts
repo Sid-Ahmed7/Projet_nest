@@ -19,7 +19,9 @@ import { JwtGuard } from '@/auth/guards/jwt.guard';
 import { RolesGuard } from '@/auth/guards/roles.guard';
 import { Roles } from '@/decorator/role.decorator';
 import { Role } from '@/player/enum/role.enum';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Players')
 @Controller('players')
 export class PlayerController {
   constructor(private readonly playerService: PlayerService) {}
