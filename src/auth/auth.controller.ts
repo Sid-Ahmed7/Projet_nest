@@ -11,8 +11,10 @@ import { Player } from 'src/player/player.entity';
 import { AuthService } from './auth.service';
 import { RegisterRequest } from './requests/register-request';
 import { JwtRefreshGuard } from './guards/jwt-refresh.guard';
+import { ApiTags } from '@nestjs/swagger';
 import type { RefreshTokenPayload } from './interfaces/jwt.interface';
 
+@ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
