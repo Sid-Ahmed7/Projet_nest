@@ -2,7 +2,9 @@ import { Body, Controller, Get, Param, ParseUUIDPipe, Post, ValidationPipe } fro
 import { MatchService } from '@/match/match.service';
 import { CreateMatchRequest } from '@/match/requests/CreateMatchRequest';
 import { SubmitMatchResultRequest } from '@/match/requests/SubmitMatchResultRequest';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Matches')
 @Controller('matches')
 export class MatchController {
   constructor(private readonly matchService: MatchService) {}
