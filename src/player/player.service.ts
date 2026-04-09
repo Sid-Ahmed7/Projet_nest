@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { Player } from './player.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { PlayerStatsDto } from './dto/player-stats.dto';
 
 @Injectable()
 export class PlayerService {
@@ -32,5 +33,24 @@ export class PlayerService {
   async create(data: Partial<Player>): Promise<Player> {
     const player = this.playerRepository.create(data);
     return this.playerRepository.save(player);
+  }
+
+  async getLeaderboard(): Promise<PlayerStatsDto[]> {
+    const rawResults = await this.playerRepository
+      .createQueryBuilder('player')
+      .leftJoin('player.winner', 'match')
+      .select('player.playerId', 'playerId')
+      .addSelect('player.username', 'username')
+      .addSelect('COUNT(match.matchId)', 'winCount')
+      .groupBy('player.playerId')
+      .addGroupBy('player.username')
+      .orderBy('"winCount"', 'DESC')
+      .getRawMany();
+
+    return rawResults.map((row) => ({
+      playerId: row.playerId,
+      username: row.username,
+      winCount: parseInt(row.winCount, 10),
+    }));
   }
 }
