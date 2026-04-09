@@ -14,6 +14,7 @@ import { SeederModule } from './seeder/seeder.module';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+      envFilePath: process.env.NODE_ENV === 'test' ? '.env.test' : (process.env.NODE_ENV === 'development' ? '.env.development.local' : '.env'),
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
