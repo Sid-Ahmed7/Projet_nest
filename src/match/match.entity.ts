@@ -21,15 +21,19 @@ export class Match {
   @JoinColumn()
   tournament!: Tournament;
 
-  @ManyToOne(() => Player, (player) => player.firstPlayer)
+  @ManyToOne(() => Player, (player) => player.firstPlayer, { nullable: true })
   @JoinColumn()
-  firstPlayer!: Player;
+  firstPlayer!: Player | null;
 
-  @ManyToOne(() => Player, (player) => player.secondPlayer)
+  @ManyToOne(() => Player, (player) => player.secondPlayer, { nullable: true })
   @JoinColumn()
-  secondPlayer!: Player;
+  secondPlayer!: Player | null;
 
   @ManyToOne(() => Player, (player) => player.winner, { nullable: true })
   @JoinColumn()
   winner!: Player | null;
+
+  @ManyToOne(() => Match, { nullable: true })
+  @JoinColumn()
+  nextMatch!: Match | null;
 }
