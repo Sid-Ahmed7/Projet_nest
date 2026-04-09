@@ -2,8 +2,8 @@ import * as bcrypt from 'bcrypt';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Player } from 'src/player/player.entity';
-import { Role } from 'src/player/enum/role.enum';
+import { Player } from '@/player/player.entity';
+import { Role } from '@/player/enum/role.enum';
 
 @Injectable()
 export class SeederService {

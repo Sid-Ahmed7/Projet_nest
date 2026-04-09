@@ -1,12 +1,8 @@
 import * as bcrypt from 'bcrypt';
-import {
-  ConflictException,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { ConflictException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { Player } from 'src/player/player.entity';
-import { PlayerService } from 'src/player/player.service';
+import { Player } from '@/player/player.entity';
+import { PlayerService } from '@/player/player.service';
 import { RegisterRequest } from './requests/register-request';
 import { JwtPayload } from './interfaces/jwt.interface';
 
@@ -36,10 +32,9 @@ export class AuthService {
   }
 
   async refresh(playerId: string, token: string): Promise<JwtPayload> {
-    const player = await this.playerService.findOne(playerId);
+    const player = await this.playerService.findPlayerById(playerId);
 
-    if (!player.refreshToken)
-      throw new UnauthorizedException('No refresh token');
+    if (!player.refreshToken) throw new UnauthorizedException('No refresh token');
 
     const match = await bcrypt.compare(token, player.refreshToken);
     if (!match) throw new UnauthorizedException('Invalid refresh token');
