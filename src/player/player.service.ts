@@ -3,7 +3,7 @@ import * as bcrypt from 'bcrypt';
 import { Player } from '@/player/player.entity';
 import { Tournament } from '@/tournament/tournament.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { ILike, Repository } from 'typeorm';
 import { UpdatePlayerRequest } from '@/player/requests/UpdatePlayerRequest';
 import { ChangePasswordRequest } from '@/player/requests/ChangePasswordRequest';
 import { CreatePlayerRequest } from '@/player/requests/CreatePlayerRequest';
@@ -23,7 +23,10 @@ export class PlayerService {
     return player;
   }
 
-  async findAll(): Promise<Player[]> {
+  async findAll(username?: string): Promise<Player[]> {
+    if (username) {
+      return this.playerRepository.find({ where: { username: ILike(`%${username}%`) } });
+    }
     return this.playerRepository.find();
   }
 

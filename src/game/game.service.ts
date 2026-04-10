@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Game } from './game.entity';
-import { Repository } from 'typeorm';
+import { ILike, Repository } from 'typeorm';
 import { CreateGameRequest } from './requests/CreateGameRequest';
 import { UpdateGameRequest } from './requests/UpdateGameRequest';
 
@@ -12,7 +12,10 @@ export class GameService {
     private readonly gameRepository: Repository<Game>,
   ) {}
 
-  async findAllGames(): Promise<Game[]> {
+  async findAllGames(genre?: string): Promise<Game[]> {
+    if (genre) {
+      return this.gameRepository.find({ where: { genre: ILike(genre) } });
+    }
     return this.gameRepository.find();
   }
 
