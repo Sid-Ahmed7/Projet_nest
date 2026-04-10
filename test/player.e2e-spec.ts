@@ -34,7 +34,6 @@ describe('PlayerController (e2e)', () => {
     const tourRepo = app.get<Repository<Tournament>>(getRepositoryToken(Tournament));
     const matchRepo = app.get<Repository<Match>>(getRepositoryToken(Match));
 
-    // Nettoyage complet pour garantir un état propre
     await matchRepo.query('TRUNCATE TABLE matches CASCADE');
     await tourRepo.query('TRUNCATE TABLE tournament_players CASCADE');
     await tourRepo.query('TRUNCATE TABLE tournaments CASCADE');
@@ -46,7 +45,6 @@ describe('PlayerController (e2e)', () => {
 
     const game = await gameRepo.save({ name: 'Chess', publisher: 'World', genre: 'Strategy', releaseDate: new Date() });
 
-    // We create a mock tournament and match where ProGamer beats NoobGamer
     const tour = await tourRepo.save({
       name: 'World Cup',
       startDate: new Date(),

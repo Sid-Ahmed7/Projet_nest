@@ -34,21 +34,18 @@ describe('TournamentController & WebSocket (e2e)', () => {
     app.useGlobalInterceptors(new TransformInterceptor(new Reflector()));
     await app.listen(5001);
 
-    // Seed database
     const gameRepo = app.get<Repository<Game>>(getRepositoryToken(Game));
     const playerRepo = app.get<Repository<Player>>(getRepositoryToken(Player));
     const tourRepo = app.get<Repository<Tournament>>(getRepositoryToken(Tournament));
     const matchRepo = app.get<Repository<Match>>(getRepositoryToken(Match));
     const jwtService = app.get<JwtService>(JwtService);
 
-    // Nettoyage complet pour garantir un état propre
     await matchRepo.query('TRUNCATE TABLE matches CASCADE');
     await tourRepo.query('TRUNCATE TABLE tournament_players CASCADE');
     await tourRepo.query('TRUNCATE TABLE tournaments CASCADE');
     await playerRepo.query('TRUNCATE TABLE players CASCADE');
     await gameRepo.query('TRUNCATE TABLE games CASCADE');
 
-    // Create a Game
     const game = await gameRepo.save({
       name: 'Super Smash Bros',
       publisher: 'Nintendo',
@@ -57,7 +54,6 @@ describe('TournamentController & WebSocket (e2e)', () => {
     });
     gameId = game.gameId;
 
-    // Create 2 Players
     const pwd = await bcrypt.hash('secret123', 10);
     const p1 = await playerRepo.save({
       username: 'PlayerOne',
@@ -72,11 +68,9 @@ describe('TournamentController & WebSocket (e2e)', () => {
       role: Role.PLAYER,
     });
 
-    // Generate tokens
     p1Token = jwtService.sign({ sub: p1.playerId, role: p1.role });
     p2Token = jwtService.sign({ sub: p2.playerId, role: p2.role });
 
-    // Ensure database is clean or we have at least 2 players
   });
 
   afterAll(async () => {
@@ -121,13 +115,11 @@ describe('TournamentController & WebSocket (e2e)', () => {
   it('WebSocket should notify when tournament reaches maxCapacity and goes INPROGRESS', async () => {
     wsClient = io('http://localhost:5001');
 
-    // Attendre la connexion WebSocket avant de déclencher les requêtes HTTP
     await new Promise<void>((resolve, reject) => {
       wsClient.on('connect', resolve);
       wsClient.on('connect_error', reject);
     });
 
-    // Enregistrer le listener AVANT les requêtes HTTP pour éviter la race condition
     const statusChangePromise = new Promise<void>((resolve, reject) => {
       const timeoutId = setTimeout(() => {
         reject(new Error('tournamentStatusChanged non reçu'));
@@ -150,7 +142,6 @@ describe('TournamentController & WebSocket (e2e)', () => {
       throw new Error(`P1 join failed ${joinP1Res.status}: ${JSON.stringify(joinP1Res.body)}`);
     }
 
-    // Player 2 déclenche la génération du bracket et l'événement WS
     const joinP2Res = await request(app.getHttpServer())
       .post(`/tournaments/${tournamentId}/join`)
       .set('Authorization', `Bearer ${p2Token}`);
