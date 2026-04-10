@@ -88,7 +88,8 @@ export class MatchService {
       throw new NotFoundException(`Player ${data.winnerId} not found`);
     }
 
-    const isParticipant = match.firstPlayer?.playerId === data.winnerId || match.secondPlayer?.playerId === data.winnerId;
+    const isParticipant =
+      match.firstPlayer?.playerId === data.winnerId || match.secondPlayer?.playerId === data.winnerId;
     if (!isParticipant) {
       throw new BadRequestException('Winner must be a participant of the match');
     }

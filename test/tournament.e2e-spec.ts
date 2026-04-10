@@ -19,7 +19,7 @@ import * as bcrypt from 'bcrypt';
 describe('TournamentController & WebSocket (e2e)', () => {
   let app: INestApplication<App>;
   let wsClient: Socket;
-  
+
   let p1Token: string;
   let p2Token: string;
   let gameId: string;
@@ -33,7 +33,7 @@ describe('TournamentController & WebSocket (e2e)', () => {
     app = moduleFixture.createNestApplication();
     app.useGlobalInterceptors(new TransformInterceptor(new Reflector()));
     await app.listen(5001);
-    
+
     // Seed database
     const gameRepo = app.get<Repository<Game>>(getRepositoryToken(Game));
     const playerRepo = app.get<Repository<Player>>(getRepositoryToken(Player));
@@ -53,7 +53,7 @@ describe('TournamentController & WebSocket (e2e)', () => {
       name: 'Super Smash Bros',
       publisher: 'Nintendo',
       releaseDate: new Date(),
-      genre: 'Fighting'
+      genre: 'Fighting',
     });
     gameId = game.gameId;
 
@@ -63,13 +63,13 @@ describe('TournamentController & WebSocket (e2e)', () => {
       username: 'PlayerOne',
       email: 'p1@test.com',
       password: pwd,
-      role: Role.PLAYER
+      role: Role.PLAYER,
     });
     const p2 = await playerRepo.save({
       username: 'PlayerTwo',
       email: 'p2@test.com',
       password: pwd,
-      role: Role.PLAYER
+      role: Role.PLAYER,
     });
 
     // Generate tokens
@@ -87,14 +87,18 @@ describe('TournamentController & WebSocket (e2e)', () => {
   });
 
   it('Admin should be able to create a tournament', async () => {
+    interface CreateTournamentResponse {
+      data: { tournamentId: string };
+    }
+
     const adminRepo = app.get<Repository<Player>>(getRepositoryToken(Player));
     const jwtService = app.get<JwtService>(JwtService);
-    
+
     const admin = await adminRepo.save({
       username: 'AdminUser',
       email: 'admin@test.com',
       password: await bcrypt.hash('secret', 10),
-      role: Role.ADMIN
+      role: Role.ADMIN,
     });
     const adminToken = jwtService.sign({ sub: admin.playerId, role: admin.role });
 
@@ -105,11 +109,12 @@ describe('TournamentController & WebSocket (e2e)', () => {
         name: 'Smash E2E Cup',
         gameId: gameId,
         maxPlayers: 2,
-        startDate: new Date().toISOString()
+        startDate: new Date().toISOString(),
       })
       .expect(201);
 
-    tournamentId = createRes.body.data.tournamentId;
+    const createBody = createRes.body as CreateTournamentResponse;
+    tournamentId = createBody.data.tournamentId;
     expect(tournamentId).toBeDefined();
   });
 
@@ -128,7 +133,7 @@ describe('TournamentController & WebSocket (e2e)', () => {
         reject(new Error('tournamentStatusChanged non reçu'));
       }, 10000);
 
-      wsClient.on('tournamentStatusChanged', (data) => {
+      wsClient.on('tournamentStatusChanged', (data: { tournamentId: string; status: string }) => {
         if (data.tournamentId === tournamentId && data.status === 'in_progress') {
           clearTimeout(timeoutId);
           expect(data.status).toBe('in_progress');

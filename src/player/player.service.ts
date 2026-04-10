@@ -11,6 +11,16 @@ import { UpdatePlayerRequest } from '@/player/requests/UpdatePlayerRequest';
 import { ChangePasswordRequest } from '@/player/requests/ChangePasswordRequest';
 import { CreatePlayerRequest } from '@/player/requests/CreatePlayerRequest';
 
+export interface PlayerStats {
+  playerId: string;
+  username: string;
+  avatar: string | null;
+  totalMatches: number;
+  wins: number;
+  losses: number;
+  winRate: number;
+}
+
 @Injectable()
 export class PlayerService {
   constructor(
@@ -113,13 +123,13 @@ export class PlayerService {
 
   async getRankings(sortBy: RankingSortCriteria = RankingSortCriteria.WINS) {
     const players = await this.playerRepository.find();
-    
+
     const matches = await this.matchRepository.find({
       where: { status: MatchStatus.COMPLETED },
       relations: ['firstPlayer', 'secondPlayer', 'winner'],
     });
 
-    const statsMap = new Map<string, any>();
+    const statsMap = new Map<string, PlayerStats>();
     for (const player of players) {
       statsMap.set(player.playerId, {
         playerId: player.playerId,

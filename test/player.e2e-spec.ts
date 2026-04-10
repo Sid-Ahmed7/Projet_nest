@@ -45,17 +45,23 @@ describe('PlayerController (e2e)', () => {
     p2 = await playerRepo.save({ username: 'NoobGamer', email: 'noob@test.com', password: pwd, role: Role.PLAYER });
 
     const game = await gameRepo.save({ name: 'Chess', publisher: 'World', genre: 'Strategy', releaseDate: new Date() });
-    
+
     // We create a mock tournament and match where ProGamer beats NoobGamer
-    const tour = await tourRepo.save({ name: 'World Cup', startDate: new Date(), maxPlayers: 2, game, players: [p1, p2] });
-    
+    const tour = await tourRepo.save({
+      name: 'World Cup',
+      startDate: new Date(),
+      maxPlayers: 2,
+      game,
+      players: [p1, p2],
+    });
+
     await matchRepo.save({
       tournament: tour,
       round: 1,
       firstPlayer: p1,
       secondPlayer: p2,
       winner: p1,
-      status: MatchStatus.COMPLETED
+      status: MatchStatus.COMPLETED,
     });
   });
 
@@ -64,27 +70,41 @@ describe('PlayerController (e2e)', () => {
   });
 
   it('GET /players/rankings should return players sorted by wins', async () => {
-    const response = await request(app.getHttpServer())
-      .get('/players/rankings?sortBy=wins')
-      .expect(200);
+    interface RankingEntry {
+      playerId: string;
+      wins: number;
+    }
+    interface RankingsResponse {
+      data: RankingEntry[];
+    }
 
-    expect(Array.isArray(response.body.data)).toBe(true);
-    const rankings = response.body.data as any[];
-    const pro = rankings.find(r => r.playerId === p1.playerId);
-    const noob = rankings.find(r => r.playerId === p2.playerId);
-    
+    const response = await request(app.getHttpServer()).get('/players/rankings?sortBy=wins').expect(200);
+    const body = response.body as RankingsResponse;
+
+    expect(Array.isArray(body.data)).toBe(true);
+    const pro = body.data.find((r) => r.playerId === p1.playerId);
+    const noob = body.data.find((r) => r.playerId === p2.playerId);
+
     expect(pro).toBeDefined();
     expect(noob).toBeDefined();
-    expect(pro.wins).toEqual(1);
-    expect(noob.wins).toEqual(0);
+    expect(pro?.wins).toEqual(1);
+    expect(noob?.wins).toEqual(0);
   });
 
   it('GET /players/:id/stats should return detailed stats', async () => {
-    const response = await request(app.getHttpServer())
-      .get(`/players/${p1.playerId}/stats`)
-      .expect(200);
+    interface StatsResponse {
+      data: {
+        totalMatches: number;
+        wins: number;
+        losses: number;
+        winRate: number;
+      };
+    }
 
-    const stats = response.body.data;
+    const response = await request(app.getHttpServer()).get(`/players/${p1.playerId}/stats`).expect(200);
+    const body = response.body as StatsResponse;
+    const stats = body.data;
+
     expect(stats).toHaveProperty('totalMatches');
     expect(stats.totalMatches).toEqual(1);
     expect(stats.wins).toEqual(1);

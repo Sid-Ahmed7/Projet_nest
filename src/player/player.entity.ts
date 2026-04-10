@@ -32,7 +32,7 @@ export class Player {
   @CreateDateColumn()
   createdAt!: Date;
 
-  @ManyToMany(() => Tournament, (tournament) => tournament.players as Player[])
+  @ManyToMany(() => Tournament, (tournament) => tournament.players)
   tournaments!: Tournament[];
 
   @OneToMany(() => Match, (match) => match.firstPlayer)

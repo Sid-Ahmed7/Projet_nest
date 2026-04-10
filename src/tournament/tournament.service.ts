@@ -104,17 +104,17 @@ export class TournamentService {
       // Bracket generation
       await this.generateBracket(savedTournament);
     }
-    
+
     return savedTournament;
   }
 
   private async generateBracket(tournament: Tournament) {
     const players = [...tournament.players].sort(() => 0.5 - Math.random());
     const numPlayers = players.length;
-    
+
     // We assume maxPlayers is a power of 2 for a perfect single-elimination bracket.
     const totalRounds = Math.max(1, Math.ceil(Math.log2(numPlayers)));
-    
+
     let previousRoundMatches: Match[] = [];
 
     // Building from Final (highest round digit) to Round 1

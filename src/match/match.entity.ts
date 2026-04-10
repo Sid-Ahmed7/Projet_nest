@@ -17,7 +17,7 @@ export class Match {
   @Column({ type: 'varchar', default: MatchStatus.PENDING })
   status!: MatchStatus;
 
-  @ManyToOne(() => Tournament, (tournament) => tournament.matches as Match[])
+  @ManyToOne(() => Tournament, (tournament) => tournament.matches)
   @JoinColumn()
   tournament!: Tournament;
 
