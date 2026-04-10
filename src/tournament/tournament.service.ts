@@ -3,10 +3,13 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Tournament } from '@/tournament/tournament.entity';
 import { Repository } from 'typeorm';
 import { Game } from '@/game/game.entity';
+import { Match } from '@/match/match.entity';
+import { MatchStatus } from '@/match/enum/match-status.enum';
 import { Player } from '@/player/player.entity';
 import { TournamentStatus } from '@/tournament/enum/tournament-status.enum';
 import { CreateTournamentRequest } from '@/tournament/requests/CreateTournamentRequest';
 import { UpdateTournamentRequest } from '@/tournament/requests/UpdateTournamentRequest';
+import { TournamentGateway } from '@/tournament/tournament.gateway';
 
 @Injectable()
 export class TournamentService {
@@ -17,6 +20,9 @@ export class TournamentService {
     private readonly gameRepository: Repository<Game>,
     @InjectRepository(Player)
     private readonly playerRepository: Repository<Player>,
+    @InjectRepository(Match)
+    private readonly matchRepository: Repository<Match>,
+    private readonly tournamentGateway: TournamentGateway,
   ) {}
 
   async findAllTournaments(status?: TournamentStatus): Promise<Tournament[]> {
@@ -92,7 +98,58 @@ export class TournamentService {
     }
 
     tournament.players.push(player);
-    return this.tournamentRepository.save(tournament);
+    const savedTournament = await this.tournamentRepository.save(tournament);
+
+    if (savedTournament.players.length === savedTournament.maxPlayers) {
+      // Bracket generation
+      await this.generateBracket(savedTournament);
+    }
+
+    return savedTournament;
+  }
+
+  private async generateBracket(tournament: Tournament) {
+    const players = [...tournament.players].sort(() => 0.5 - Math.random());
+    const numPlayers = players.length;
+
+    // We assume maxPlayers is a power of 2 for a perfect single-elimination bracket.
+    const totalRounds = Math.max(1, Math.ceil(Math.log2(numPlayers)));
+
+    let previousRoundMatches: Match[] = [];
+
+    // Building from Final (highest round digit) to Round 1
+    for (let r = totalRounds; r >= 1; r--) {
+      // Amount of matches in this round
+      const numMatchesInRound = Math.pow(2, totalRounds - r);
+      const currentRoundMatches: Match[] = [];
+
+      for (let i = 0; i < numMatchesInRound; i++) {
+        const match = this.matchRepository.create({
+          tournament,
+          round: r,
+          status: MatchStatus.PENDING,
+        });
+
+        if (r < totalRounds) {
+          // Parent logic: every 2 matches point to the same 1 match in the previous (higher) round
+          match.nextMatch = previousRoundMatches[Math.floor(i / 2)];
+        }
+
+        if (r === 1) {
+          // Feed players to the first round matches
+          match.firstPlayer = players[i * 2] || null;
+          match.secondPlayer = players[i * 2 + 1] || null;
+        }
+
+        const savedMatch = await this.matchRepository.save(match);
+        currentRoundMatches.push(savedMatch);
+      }
+      previousRoundMatches = currentRoundMatches;
+    }
+
+    tournament.status = TournamentStatus.INPROGRESS;
+    await this.tournamentRepository.save(tournament);
+    this.tournamentGateway.notifyTournamentStatusChange(tournament.tournamentId, TournamentStatus.INPROGRESS);
   }
 
   async findMatchesByTournament(tournamentId: string) {

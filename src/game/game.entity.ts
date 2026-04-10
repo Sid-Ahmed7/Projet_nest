@@ -18,6 +18,6 @@ export class Game {
   @Column()
   genre!: string;
 
-  @OneToMany(() => Tournament, (tournament) => tournament.game as Game)
+  @OneToMany(() => Tournament, (tournament) => tournament.game)
   tournaments!: Tournament[];
 }
