@@ -4,9 +4,11 @@ import { Repository } from 'typeorm';
 import { Match } from '@/match/match.entity';
 import { Player } from '@/player/player.entity';
 import { Tournament } from '@/tournament/tournament.entity';
+import { TournamentStatus } from '@/tournament/enum/tournament-status.enum';
 import { MatchStatus } from '@/match/enum/match-status.enum';
 import { CreateMatchRequest } from '@/match/requests/CreateMatchRequest';
 import { SubmitMatchResultRequest } from '@/match/requests/SubmitMatchResultRequest';
+import { TournamentGateway } from '@/tournament/tournament.gateway';
 
 @Injectable()
 export class MatchService {
@@ -17,6 +19,7 @@ export class MatchService {
     private readonly playerRepository: Repository<Player>,
     @InjectRepository(Tournament)
     private readonly tournamentRepository: Repository<Tournament>,
+    private readonly tournamentGateway: TournamentGateway,
   ) {}
 
   async findAll(status?: MatchStatus): Promise<Match[]> {
@@ -34,7 +37,7 @@ export class MatchService {
   async findOne(matchId: string): Promise<Match> {
     const match = await this.matchRepository.findOne({
       where: { matchId },
-      relations: ['tournament', 'firstPlayer', 'secondPlayer', 'winner'],
+      relations: ['tournament', 'firstPlayer', 'secondPlayer', 'winner', 'nextMatch'],
     });
     if (!match) {
       throw new NotFoundException(`Match ${matchId} not found`);
@@ -91,7 +94,8 @@ export class MatchService {
       throw new NotFoundException(`Player ${data.winnerId} not found`);
     }
 
-    const isParticipant = match.firstPlayer.playerId === data.winnerId || match.secondPlayer.playerId === data.winnerId;
+    const isParticipant =
+      match.firstPlayer?.playerId === data.winnerId || match.secondPlayer?.playerId === data.winnerId;
     if (!isParticipant) {
       throw new BadRequestException('Winner must be a participant of the match');
     }
@@ -99,6 +103,32 @@ export class MatchService {
     match.winner = winner;
     match.score = data.score;
     match.status = MatchStatus.COMPLETED;
-    return this.matchRepository.save(match);
+    const savedMatch = await this.matchRepository.save(match);
+
+    if (savedMatch.nextMatch) {
+      const nextMatch = await this.matchRepository.findOne({
+        where: { matchId: savedMatch.nextMatch.matchId },
+        relations: ['firstPlayer', 'secondPlayer'],
+      });
+      if (nextMatch) {
+        if (!nextMatch.firstPlayer) {
+          nextMatch.firstPlayer = winner;
+        } else {
+          nextMatch.secondPlayer = winner;
+        }
+        await this.matchRepository.save(nextMatch);
+      }
+    } else {
+      const tournament = await this.tournamentRepository.findOne({
+        where: { tournamentId: savedMatch.tournament.tournamentId },
+      });
+      if (tournament) {
+        tournament.status = TournamentStatus.COMPLETED;
+        await this.tournamentRepository.save(tournament);
+        this.tournamentGateway.notifyTournamentStatusChange(tournament.tournamentId, TournamentStatus.COMPLETED);
+      }
+    }
+
+    return savedMatch;
   }
 }

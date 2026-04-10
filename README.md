@@ -50,7 +50,9 @@ $ npm run start:prod
 # unit tests
 $ npm run test
 
-# e2e tests
+# e2e tests (Automated with Docker Compose)
+# Note: This command will automatically spin up an ephemeral PostgreSQL test database, 
+# run the e2e test suite, and destroy the database container upon completion.
 $ npm run test:e2e
 
 # test coverage

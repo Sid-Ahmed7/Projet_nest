@@ -13,6 +13,7 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { PlayerService } from '@/player/player.service';
+import { RankingQueryRequest } from '@/player/requests/RankingQueryRequest';
 import { ChangePasswordRequest } from '@/player/requests/ChangePasswordRequest';
 import { UpdatePlayerRequest } from '@/player/requests/UpdatePlayerRequest';
 import { ResponseMessage } from '@/decorator/response-message.decorator';
@@ -33,10 +34,22 @@ export class PlayerController {
     return this.playerService.findAll(username);
   }
 
+  @Get('rankings')
+  @ResponseMessage('Player rankings retrieved successfully')
+  async getRankings(@Query(ValidationPipe) query: RankingQueryRequest) {
+    return this.playerService.getRankings(query.sortBy);
+  }
+
   @Get(':playerId')
   @ResponseMessage('Player retrieved successfully')
   async findPlayerById(@Param('playerId', ParseUUIDPipe) playerId: string) {
     return this.playerService.findPlayerById(playerId);
+  }
+
+  @Get(':playerId/stats')
+  @ResponseMessage('Player statistics retrieved successfully')
+  async getPlayerStats(@Param('playerId', ParseUUIDPipe) playerId: string) {
+    return this.playerService.getPlayerStats(playerId);
   }
 
   @Get(':playerId/tournaments')

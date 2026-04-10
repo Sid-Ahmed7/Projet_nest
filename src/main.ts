@@ -14,7 +14,7 @@ async function bootstrap() {
 
   const config = new DocumentBuilder()
     .setTitle('API Video Games')
-    .setDescription('L\'API pour la gestion des tournois esport')
+    .setDescription("L'API pour la gestion des tournois esport")
     .setVersion('1.0')
     .addBearerAuth()
     .build();
@@ -24,4 +24,4 @@ async function bootstrap() {
   await app.get(SeederService).seedAdmin();
   await app.listen(process.env.PORT ?? 3000);
 }
-bootstrap();
+void bootstrap();
