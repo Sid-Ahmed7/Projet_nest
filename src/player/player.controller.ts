@@ -30,8 +30,8 @@ export class PlayerController {
 
   @Get()
   @ResponseMessage('Players retrieved successfully')
-  async findAll() {
-    return this.playerService.findAll();
+  async findAll(@Query('username') username?: string) {
+    return this.playerService.findAll(username);
   }
 
   @Get('rankings')

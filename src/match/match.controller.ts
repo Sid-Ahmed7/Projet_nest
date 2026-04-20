@@ -1,7 +1,8 @@
-import { Body, Controller, Get, Param, ParseUUIDPipe, Post, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Get, Param, ParseUUIDPipe, Post, Query, ValidationPipe } from '@nestjs/common';
 import { MatchService } from '@/match/match.service';
 import { CreateMatchRequest } from '@/match/requests/CreateMatchRequest';
 import { SubmitMatchResultRequest } from '@/match/requests/SubmitMatchResultRequest';
+import { MatchStatus } from '@/match/enum/match-status.enum';
 import { ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Matches')
@@ -10,8 +11,8 @@ export class MatchController {
   constructor(private readonly matchService: MatchService) {}
 
   @Get()
-  findAllMatches() {
-    return this.matchService.findAll();
+  findAllMatches(@Query('status') status?: MatchStatus) {
+    return this.matchService.findAll(status);
   }
 
   @Get(':matchId')

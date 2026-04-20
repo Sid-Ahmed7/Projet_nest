@@ -9,6 +9,7 @@ import {
   ParseUUIDPipe,
   Post,
   Put,
+  Query,
   UseGuards,
   ValidationPipe,
 } from '@nestjs/common';
@@ -29,8 +30,8 @@ export class GameController {
 
   @Get()
   @ResponseMessage('Games retrieved successfully')
-  findAllGames() {
-    return this.gameService.findAllGames();
+  findAllGames(@Query('genre') genre?: string) {
+    return this.gameService.findAllGames(genre);
   }
 
   @Get(':gameId')

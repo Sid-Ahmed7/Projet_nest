@@ -22,7 +22,13 @@ export class MatchService {
     private readonly tournamentGateway: TournamentGateway,
   ) {}
 
-  async findAll(): Promise<Match[]> {
+  async findAll(status?: MatchStatus): Promise<Match[]> {
+    if (status) {
+      return this.matchRepository.find({
+        where: { status },
+        relations: ['tournament', 'firstPlayer', 'secondPlayer', 'winner'],
+      });
+    }
     return this.matchRepository.find({
       relations: ['tournament', 'firstPlayer', 'secondPlayer', 'winner'],
     });

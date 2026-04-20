@@ -70,7 +70,6 @@ describe('TournamentController & WebSocket (e2e)', () => {
 
     p1Token = jwtService.sign({ sub: p1.playerId, role: p1.role });
     p2Token = jwtService.sign({ sub: p2.playerId, role: p2.role });
-
   });
 
   afterAll(async () => {
