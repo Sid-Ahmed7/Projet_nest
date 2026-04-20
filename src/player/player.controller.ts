@@ -59,6 +59,7 @@ export class PlayerController {
   }
 
   @Patch(':playerId')
+  @HttpCode(HttpStatus.OK)
   @UseGuards(JwtGuard, RolesGuard)
   @Roles(Role.ADMIN, Role.PLAYER)
   @ResponseMessage('Player updated successfully')

@@ -8,7 +8,7 @@ export class CreateGameRequest {
   publisher!: string;
 
   @IsDateString()
-  releaseDate!: Date;
+  releaseDate!: string;
 
   @IsString()
   genre!: string;
