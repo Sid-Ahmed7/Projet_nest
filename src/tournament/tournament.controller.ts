@@ -41,6 +41,7 @@ export class TournamentController {
 
   @UseGuards(JwtGuard)
   @Post()
+  @HttpCode(HttpStatus.CREATED)
   @ResponseMessage('Tournament created successfully')
   createTournament(@Body(ValidationPipe) req: CreateTournamentRequest) {
     return this.tournamentsService.createTournament(req);
@@ -48,6 +49,7 @@ export class TournamentController {
 
   @UseGuards(JwtGuard)
   @Put(':tournamentId')
+  @HttpCode(HttpStatus.OK)
   @ResponseMessage('Tournament updated successfully')
   updateTournament(
     @Param('tournamentId', ParseUUIDPipe) tournamentId: string,
@@ -66,6 +68,7 @@ export class TournamentController {
 
   @UseGuards(JwtGuard)
   @Post(':tournamentId/join')
+  @HttpCode(HttpStatus.OK)
   @ResponseMessage('Tournament joined successfully')
   joinTournament(
     @Param('tournamentId', ParseUUIDPipe) tournamentId: string,

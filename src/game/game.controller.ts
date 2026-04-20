@@ -43,6 +43,7 @@ export class GameController {
   @UseGuards(JwtGuard, RolesGuard)
   @Roles(Role.ADMIN)
   @Post()
+  @HttpCode(HttpStatus.CREATED)
   @ResponseMessage('Game created successfully')
   createGame(@Body(ValidationPipe) request: CreateGameRequest) {
     return this.gameService.createGame(request);
@@ -51,6 +52,7 @@ export class GameController {
   @UseGuards(JwtGuard, RolesGuard)
   @Roles(Role.ADMIN)
   @Put(':gameId')
+  @HttpCode(HttpStatus.OK)
   @ResponseMessage('Game updated successfully')
   updateGame(@Param('gameId', ParseUUIDPipe) gameId: string, @Body(ValidationPipe) request: UpdateGameRequest) {
     return this.gameService.updateGame(gameId, request);

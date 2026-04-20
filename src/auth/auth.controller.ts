@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Request, UseGuards, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, HttpCode, HttpStatus, Post, Request, UseGuards, ValidationPipe } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { Player } from '@/player/player.entity';
 import { AuthService } from './auth.service';
@@ -15,12 +15,14 @@ export class AuthController {
 
   @UseGuards(AuthGuard('local'))
   @Post('login')
+  @HttpCode(HttpStatus.OK)
   @ResponseMessage('Login successful')
   login(@Request() req: { user: Player }) {
     return this.authService.generateTokens(req.user);
   }
 
   @Post('register')
+  @HttpCode(HttpStatus.CREATED)
   @ResponseMessage('Player registered successfully')
   register(@Body(ValidationPipe) req: RegisterRequest) {
     return this.authService.register(req);
@@ -28,6 +30,7 @@ export class AuthController {
 
   @UseGuards(JwtRefreshGuard)
   @Post('refresh')
+  @HttpCode(HttpStatus.OK)
   @ResponseMessage('Tokens refreshed successfully')
   refresh(@Request() req: RefreshTokenPayload) {
     return this.authService.refresh(req.user.playerId, req.user.refreshToken);
