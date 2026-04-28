@@ -76,7 +76,7 @@ JWT_SECRET=votre_secret_jwt_tres_fort
 JWT_EXPIRES_IN=900
 JWT_REFRESH_SECRET=votre_secret_refresh_tres_fort
 JWT_REFRESH_EXPIRES_IN=604800
-ADMIN_USERNAME=admin_prod
+ADMIN_USERNAME=admin_test
 ADMIN_EMAIL=admin@admin.com
 ADMIN_PASSWORD=votre_mot_de_passe_admin_fort
 ```
