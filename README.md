@@ -30,13 +30,13 @@ DB_NAME=video_games
 DB_SYNCHRONIZE=true
 NODE_ENV=development
 PORT=3003
-JWT_SECRET=votre_secret_jwt_tres_fort
+JWT_SECRET=secret_jwt
 JWT_EXPIRES_IN=900
-JWT_REFRESH_SECRET=votre_secret_refresh_tres_fort
+JWT_REFRESH_SECRET=secret_refresh
 JWT_REFRESH_EXPIRES_IN=604800
 ADMIN_USERNAME=admin
-ADMIN_EMAIL=admin@admin.com
-ADMIN_PASSWORD=Admin1234!
+ADMIN_EMAIL=email_admin
+ADMIN_PASSWORD=mot_de_passe_admin
 ```
 
 ### .env (PROD)
@@ -46,18 +46,18 @@ Utilise par `docker-compose.yml`. Contient les configurations pour l'environneme
 DB_HOST=postgres
 DB_PORT=5432
 DB_USERNAME=postgres
-DB_PASSWORD=votre_mot_de_passe_fort
+DB_PASSWORD=mot_de_passe
 DB_NAME=video_games
 DB_SYNCHRONIZE=false
 NODE_ENV=production
 PORT=3000
-JWT_SECRET=votre_secret_jwt_tres_fort
+JWT_SECRET=secret_jwt
 JWT_EXPIRES_IN=900
-JWT_REFRESH_SECRET=votre_secret_refresh_tres_fort
+JWT_REFRESH_SECRET=secret_refresh
 JWT_REFRESH_EXPIRES_IN=604800
 ADMIN_USERNAME=admin
-ADMIN_EMAIL=admin@production.com
-ADMIN_PASSWORD=votre_mot_de_passe_admin_fort
+ADMIN_EMAIL=email_admin
+ADMIN_PASSWORD=mot_de_passe_admin
 ```
 
 ### .env.test (TEST)
@@ -72,14 +72,18 @@ DB_NAME=video_games_test
 DB_SYNCHRONIZE=true
 NODE_ENV=test
 PORT=3003
-JWT_SECRET=votre_secret_jwt_tres_fort
+JWT_SECRET=secret_jwt
 JWT_EXPIRES_IN=900
-JWT_REFRESH_SECRET=votre_secret_refresh_tres_fort
+JWT_REFRESH_SECRET=secret_refresh
 JWT_REFRESH_EXPIRES_IN=604800
 ADMIN_USERNAME=admin_test
-ADMIN_EMAIL=admin@admin.com
-ADMIN_PASSWORD=votre_mot_de_passe_admin_fort
+ADMIN_EMAIL=email_admin_test
+ADMIN_PASSWORD=mot_de_passe_admin
 ```
+Remplacer egalement :
+- `ADMIN_EMAIL` par une adresse email administrateur (ex: `admin@gmail.com`)
+- `ADMIN_PASSWORD` par un mot de passe (min. 8 caracteres, majuscules, chiffres et caracteres speciaux )
+
 
 ## 3. Generer les secrets
 
@@ -89,7 +93,11 @@ Pour les variables `JWT_SECRET`, `JWT_REFRESH_SECRET` :
 openssl rand -hex 64
 ```
 
-Remplacer les valeurs `votre_secret_jwt_tres_fort` et `votre_secret_refresh_tres_fort` dans `.env` et `.env.development.local` par les valeurs generees.
+Remplacer les valeurs `secret_jwt` et `secret_refresh` dans `.env` et `.env.development.local` par les valeurs generees.
+
+Remplacer egalement :
+- `ADMIN_EMAIL` par une adresse email administrateur (ex: `admin@gmail.com`)
+- `ADMIN_PASSWORD` par un mot de passe (min. 8 caracteres, majuscules, chiffres et caracteres speciaux )
 
 ## 4. Lancer le projet
 
