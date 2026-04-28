@@ -37,20 +37,25 @@ ADMIN_EMAIL=admin@admin.com
 ADMIN_PASSWORD=Admin1234!
 ```
 
-### .env (Par defaut / PROD)
-Utilise par `docker-compose.yml`.
+### .env.prod (PROD)
+Utilise par `docker-compose.prod.yml`. Contient des configurations securisees pour la production.
 
 ```env
 DB_HOST=postgres
 DB_PORT=5432
-DB_USERNAME=postgres
-DB_PASSWORD=votre_mot_de_passe
-DB_NAME=video_games
+DB_USERNAME=postgres_prod
+DB_PASSWORD=votre_mot_de_passe_fort
+DB_NAME=video_games_prod
 DB_SYNCHRONIZE=false
 NODE_ENV=production
 PORT=3000
-JWT_SECRET=votre_secret_jwt_prod
+JWT_SECRET=votre_secret_jwt_tres_fort
 JWT_EXPIRES_IN=900
+JWT_REFRESH_SECRET=votre_secret_refresh_tres_fort
+JWT_REFRESH_EXPIRES_IN=604800
+ADMIN_USERNAME=admin_prod
+ADMIN_EMAIL=admin@production.com
+ADMIN_PASSWORD=votre_mot_de_passe_admin_fort
 ```
 
 ### .env.test (TEST)
@@ -75,10 +80,10 @@ PORT=3003
 docker compose  -f docker-compose.dev.yml up --build
 ```
 
-### Production / Default
+### Production
 
 ```bash
-docker compose -f docker-compose.yml up --build
+docker compose -f docker-compose.prod.yml up --build -d
 ```
 
 ### Tests E2E
@@ -102,5 +107,9 @@ Le projet utilise un `SeederService` qui s'execute au demarrage de l'application
 Pour visualiser les logs :
 
 ```bash
+# Developpement
 docker compose -f docker-compose.dev.yml logs -f api
+
+# Production
+docker compose -f docker-compose.prod.yml logs -f api
 ```
