@@ -21,7 +21,7 @@ import { JwtGuard } from '@/auth/guards/jwt.guard';
 import { RolesGuard } from '@/auth/guards/roles.guard';
 import { Roles } from '@/decorator/role.decorator';
 import { Role } from '@/player/enum/role.enum';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiTags, ApiQuery, ApiParam, ApiBearerAuth } from '@nestjs/swagger';
 
 @ApiTags('Players')
 @Controller('players')
@@ -29,6 +29,7 @@ export class PlayerController {
   constructor(private readonly playerService: PlayerService) {}
 
   @Get()
+  @ApiQuery({ name: 'username', required: false, example: 'admin' })
   @ResponseMessage('Players retrieved successfully')
   async findAll(@Query('username') username?: string) {
     return this.playerService.findAll(username);
@@ -41,18 +42,21 @@ export class PlayerController {
   }
 
   @Get(':playerId')
+  @ApiParam({ name: 'playerId', example: '123e4567-e89b-12d3-a456-426614174001' })
   @ResponseMessage('Player retrieved successfully')
   async findPlayerById(@Param('playerId', ParseUUIDPipe) playerId: string) {
     return this.playerService.findPlayerById(playerId);
   }
 
   @Get(':playerId/stats')
+  @ApiParam({ name: 'playerId', example: '123e4567-e89b-12d3-a456-426614174001' })
   @ResponseMessage('Player statistics retrieved successfully')
   async getPlayerStats(@Param('playerId', ParseUUIDPipe) playerId: string) {
     return this.playerService.getPlayerStats(playerId);
   }
 
   @Get(':playerId/tournaments')
+  @ApiParam({ name: 'playerId', example: '123e4567-e89b-12d3-a456-426614174001' })
   @ResponseMessage('Player tournaments retrieved successfully')
   async findTournamentsByPlayer(@Param('playerId', ParseUUIDPipe) playerId: string) {
     return this.playerService.findTournamentsByPlayer(playerId);
@@ -62,6 +66,8 @@ export class PlayerController {
   @HttpCode(HttpStatus.OK)
   @UseGuards(JwtGuard, RolesGuard)
   @Roles(Role.ADMIN, Role.PLAYER)
+  @ApiBearerAuth()
+  @ApiParam({ name: 'playerId', example: '123e4567-e89b-12d3-a456-426614174001' })
   @ResponseMessage('Player updated successfully')
   async updatePlayerProfile(
     @Param('playerId', ParseUUIDPipe) playerId: string,
@@ -74,6 +80,8 @@ export class PlayerController {
   @UseGuards(JwtGuard, RolesGuard)
   @Roles(Role.ADMIN, Role.PLAYER)
   @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiBearerAuth()
+  @ApiParam({ name: 'playerId', example: '123e4567-e89b-12d3-a456-426614174001' })
   async deletePlayer(@Param('playerId', ParseUUIDPipe) playerId: string) {
     return this.playerService.deletePlayer(playerId);
   }
@@ -82,6 +90,8 @@ export class PlayerController {
   @UseGuards(JwtGuard, RolesGuard)
   @Roles(Role.ADMIN, Role.PLAYER)
   @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiBearerAuth()
+  @ApiParam({ name: 'playerId', example: '123e4567-e89b-12d3-a456-426614174001' })
   async changePassword(
     @Param('playerId', ParseUUIDPipe) playerId: string,
     @Body(ValidationPipe) req: ChangePasswordRequest,
