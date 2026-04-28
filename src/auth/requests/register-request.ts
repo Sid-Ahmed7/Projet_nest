@@ -10,7 +10,10 @@ export class RegisterRequest {
   @IsEmail()
   email!: string;
 
-  @ApiProperty({ example: 'StrongP@ssw0rd!', description: 'User password (must contain uppercase, lowercase, number, and special character)' })
+  @ApiProperty({
+    example: 'StrongP@ssw0rd!',
+    description: 'User password (must contain uppercase, lowercase, number, and special character)',
+  })
   @IsString()
   @MinLength(8)
   @Matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/, {

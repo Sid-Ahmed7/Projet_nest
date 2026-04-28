@@ -101,7 +101,6 @@ export class TournamentService {
     const savedTournament = await this.tournamentRepository.save(tournament);
 
     if (savedTournament.players.length === savedTournament.maxPlayers) {
-      // Bracket generation
       await this.generateBracket(savedTournament);
     }
 
@@ -112,14 +111,11 @@ export class TournamentService {
     const players = [...tournament.players].sort(() => 0.5 - Math.random());
     const numPlayers = players.length;
 
-    // We assume maxPlayers is a power of 2 for a perfect single-elimination bracket.
     const totalRounds = Math.max(1, Math.ceil(Math.log2(numPlayers)));
 
     let previousRoundMatches: Match[] = [];
 
-    // Building from Final (highest round digit) to Round 1
     for (let r = totalRounds; r >= 1; r--) {
-      // Amount of matches in this round
       const numMatchesInRound = Math.pow(2, totalRounds - r);
       const currentRoundMatches: Match[] = [];
 
@@ -131,12 +127,10 @@ export class TournamentService {
         });
 
         if (r < totalRounds) {
-          // Parent logic: every 2 matches point to the same 1 match in the previous (higher) round
           match.nextMatch = previousRoundMatches[Math.floor(i / 2)];
         }
 
         if (r === 1) {
-          // Feed players to the first round matches
           match.firstPlayer = players[i * 2] || null;
           match.secondPlayer = players[i * 2 + 1] || null;
         }
