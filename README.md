@@ -30,8 +30,10 @@ DB_NAME=video_games
 DB_SYNCHRONIZE=true
 NODE_ENV=development
 PORT=3003
-JWT_SECRET=votre_secret_jwt
+JWT_SECRET=votre_secret_jwt_tres_fort
 JWT_EXPIRES_IN=900
+JWT_REFRESH_SECRET=votre_secret_refresh_tres_fort
+JWT_REFRESH_EXPIRES_IN=604800
 ADMIN_USERNAME=admin
 ADMIN_EMAIL=admin@admin.com
 ADMIN_PASSWORD=Admin1234!
@@ -54,7 +56,7 @@ JWT_EXPIRES_IN=900
 JWT_REFRESH_SECRET=votre_secret_refresh_tres_fort
 JWT_REFRESH_EXPIRES_IN=604800
 ADMIN_USERNAME=admin_prod
-ADMIN_EMAIL=admin@production.com
+ADMIN_EMAIL=admin@admin.com
 ADMIN_PASSWORD=votre_mot_de_passe_admin_fort
 ```
 
@@ -70,9 +72,26 @@ DB_NAME=video_games_test
 DB_SYNCHRONIZE=true
 NODE_ENV=test
 PORT=3003
+JWT_SECRET=votre_secret_jwt_tres_fort
+JWT_EXPIRES_IN=900
+JWT_REFRESH_SECRET=votre_secret_refresh_tres_fort
+JWT_REFRESH_EXPIRES_IN=604800
+ADMIN_USERNAME=admin_prod
+ADMIN_EMAIL=admin@admin.com
+ADMIN_PASSWORD=votre_mot_de_passe_admin_fort
 ```
 
-## 3. Lancer le projet
+## 3. Generer les secrets
+
+Pour les variables `JWT_SECRET`, `JWT_REFRESH_SECRET` :
+
+```bash
+openssl rand -hex 64
+```
+
+Remplacer les valeurs `votre_secret_jwt_tres_fort` et `votre_secret_refresh_tres_fort` dans `.env` et `.env.development.local` par les valeurs generees.
+
+## 4. Lancer le projet
 
 ### Developpement (Watch mode)
 
@@ -84,6 +103,13 @@ docker compose  -f docker-compose.dev.yml up --build
 
 ```bash
 docker compose -f docker-compose.prod.yml up --build -d
+```
+
+### Tests unitaires
+
+```bash
+npm test                 
+npm run test:watch
 ```
 
 ### Tests E2E
