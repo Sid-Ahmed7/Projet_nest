@@ -39,15 +39,15 @@ ADMIN_EMAIL=admin@admin.com
 ADMIN_PASSWORD=Admin1234!
 ```
 
-### .env.prod (PROD)
-Utilise par `docker-compose.prod.yml`. Contient des configurations securisees pour la production.
+### .env (PROD)
+Utilise par `docker-compose.yml`. Contient les configurations pour l'environnement de production.
 
 ```env
 DB_HOST=postgres
 DB_PORT=5432
-DB_USERNAME=postgres_prod
+DB_USERNAME=postgres
 DB_PASSWORD=votre_mot_de_passe_fort
-DB_NAME=video_games_prod
+DB_NAME=video_games
 DB_SYNCHRONIZE=false
 NODE_ENV=production
 PORT=3000
@@ -55,8 +55,8 @@ JWT_SECRET=votre_secret_jwt_tres_fort
 JWT_EXPIRES_IN=900
 JWT_REFRESH_SECRET=votre_secret_refresh_tres_fort
 JWT_REFRESH_EXPIRES_IN=604800
-ADMIN_USERNAME=admin_prod
-ADMIN_EMAIL=admin@admin.com
+ADMIN_USERNAME=admin
+ADMIN_EMAIL=admin@production.com
 ADMIN_PASSWORD=votre_mot_de_passe_admin_fort
 ```
 
@@ -102,7 +102,7 @@ docker compose  -f docker-compose.dev.yml up --build
 ### Production
 
 ```bash
-docker compose -f docker-compose.prod.yml up --build -d
+docker compose up --build -d
 ```
 
 ### Tests unitaires
@@ -137,5 +137,5 @@ Pour visualiser les logs :
 docker compose -f docker-compose.dev.yml logs -f api
 
 # Production
-docker compose -f docker-compose.prod.yml logs -f api
+docker compose logs -f api
 ```
