@@ -19,7 +19,12 @@ export class UpdateTournamentRequest {
   @IsOptional()
   startDate?: string;
 
-  @ApiProperty({ enum: TournamentStatus, example: TournamentStatus.INPROGRESS, description: 'Status of the tournament', required: false })
+  @ApiProperty({
+    enum: TournamentStatus,
+    example: TournamentStatus.INPROGRESS,
+    description: 'Status of the tournament',
+    required: false,
+  })
   @IsEnum(TournamentStatus)
   @IsOptional()
   status?: TournamentStatus;
