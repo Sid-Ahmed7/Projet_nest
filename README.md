@@ -72,7 +72,7 @@ PORT=3003
 ### Developpement (Watch mode)
 
 ```bash
-docker compose --env-file .env.development.local -f docker-compose.dev.yml up --build
+docker compose  -f docker-compose.dev.yml up --build
 ```
 
 ### Production / Default
@@ -102,5 +102,5 @@ Le projet utilise un `SeederService` qui s'execute au demarrage de l'application
 Pour visualiser les logs :
 
 ```bash
-docker compose --env-file .env.development.local -f docker-compose.dev.yml logs -f api
+docker compose -f docker-compose.dev.yml logs -f api
 ```
