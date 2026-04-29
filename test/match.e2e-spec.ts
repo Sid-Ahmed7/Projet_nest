@@ -94,6 +94,7 @@ describe('MatchController (e2e)', () => {
     it('should create a match', async () => {
       const response = await request(app.getHttpServer())
         .post('/matches')
+        .set('Authorization', `Bearer ${firstPlayerToken}`)
         .send({ tournamentId, firstPlayerId, secondPlayerId, round: 1 })
         .expect(201);
 
@@ -103,13 +104,18 @@ describe('MatchController (e2e)', () => {
     });
 
     it('should return 400 when data is invalid', async () => {
-      await request(app.getHttpServer()).post('/matches').send({ tournamentId, firstPlayerId, round: 1 }).expect(400);
+      await request(app.getHttpServer())
+        .post('/matches')
+        .set('Authorization', `Bearer ${firstPlayerToken}`)
+        .send({ tournamentId, firstPlayerId, round: 1 })
+        .expect(400);
     });
 
     it('should return 404 when tournament does not exist', async () => {
       const randomID = crypto.randomUUID();
       await request(app.getHttpServer())
         .post('/matches')
+        .set('Authorization', `Bearer ${firstPlayerToken}`)
         .send({
           tournamentId: randomID,
           firstPlayerId,
