@@ -12,7 +12,6 @@ import {
   Query,
   Request,
   UseGuards,
-  ValidationPipe,
 } from '@nestjs/common';
 import { JwtGuard } from '@/auth/guards/jwt.guard';
 import { ResponseMessage } from '@/decorator/response-message.decorator';
@@ -43,23 +42,18 @@ export class TournamentController {
 
   @UseGuards(JwtGuard)
   @Post()
-  @HttpCode(HttpStatus.CREATED)
   @ApiBearerAuth()
   @ResponseMessage('Tournament created successfully')
-  createTournament(@Body(ValidationPipe) req: CreateTournamentRequest) {
+  createTournament(@Body() req: CreateTournamentRequest) {
     return this.tournamentsService.createTournament(req);
   }
 
   @UseGuards(JwtGuard)
   @Put(':tournamentId')
-  @HttpCode(HttpStatus.OK)
   @ApiBearerAuth()
   @ApiParam({ name: 'tournamentId', example: '123e4567-e89b-12d3-a456-426614174000' })
   @ResponseMessage('Tournament updated successfully')
-  updateTournament(
-    @Param('tournamentId', ParseUUIDPipe) tournamentId: string,
-    @Body(ValidationPipe) req: UpdateTournamentRequest,
-  ) {
+  updateTournament(@Param('tournamentId', ParseUUIDPipe) tournamentId: string, @Body() req: UpdateTournamentRequest) {
     return this.tournamentsService.updateTournament(tournamentId, req);
   }
 

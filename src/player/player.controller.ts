@@ -10,7 +10,6 @@ import {
   Patch,
   Query,
   UseGuards,
-  ValidationPipe,
 } from '@nestjs/common';
 import { PlayerService } from '@/player/player.service';
 import { RankingQueryRequest } from '@/player/requests/RankingQueryRequest';
@@ -37,7 +36,7 @@ export class PlayerController {
 
   @Get('rankings')
   @ResponseMessage('Player rankings retrieved successfully')
-  async getRankings(@Query(ValidationPipe) query: RankingQueryRequest) {
+  async getRankings(@Query() query: RankingQueryRequest) {
     return this.playerService.getRankings(query.sortBy);
   }
 
@@ -63,16 +62,12 @@ export class PlayerController {
   }
 
   @Patch(':playerId')
-  @HttpCode(HttpStatus.OK)
   @UseGuards(JwtGuard, RolesGuard)
   @Roles(Role.ADMIN, Role.PLAYER)
   @ApiBearerAuth()
   @ApiParam({ name: 'playerId', example: '123e4567-e89b-12d3-a456-426614174001' })
   @ResponseMessage('Player updated successfully')
-  async updatePlayerProfile(
-    @Param('playerId', ParseUUIDPipe) playerId: string,
-    @Body(ValidationPipe) req: UpdatePlayerRequest,
-  ) {
+  async updatePlayerProfile(@Param('playerId', ParseUUIDPipe) playerId: string, @Body() req: UpdatePlayerRequest) {
     return this.playerService.updatePlayerProfile(playerId, req);
   }
 
@@ -92,10 +87,7 @@ export class PlayerController {
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiBearerAuth()
   @ApiParam({ name: 'playerId', example: '123e4567-e89b-12d3-a456-426614174001' })
-  async changePassword(
-    @Param('playerId', ParseUUIDPipe) playerId: string,
-    @Body(ValidationPipe) req: ChangePasswordRequest,
-  ) {
+  async changePassword(@Param('playerId', ParseUUIDPipe) playerId: string, @Body() req: ChangePasswordRequest) {
     return this.playerService.changePassword(playerId, req);
   }
 }

@@ -1,4 +1,4 @@
-import { Body, Controller, HttpCode, HttpStatus, Post, Request, UseGuards, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, HttpCode, HttpStatus, Post, Request, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { Player } from '@/player/player.entity';
 import { AuthService } from './auth.service';
@@ -24,9 +24,8 @@ export class AuthController {
   }
 
   @Post('register')
-  @HttpCode(HttpStatus.CREATED)
   @ResponseMessage('Player registered successfully')
-  register(@Body(ValidationPipe) req: RegisterRequest) {
+  register(@Body() req: RegisterRequest) {
     return this.authService.register(req);
   }
 

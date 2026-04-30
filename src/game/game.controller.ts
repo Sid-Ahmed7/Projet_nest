@@ -11,7 +11,6 @@ import {
   Put,
   Query,
   UseGuards,
-  ValidationPipe,
 } from '@nestjs/common';
 import { GameService } from './game.service';
 import { JwtGuard } from '@/auth/guards/jwt.guard';
@@ -45,21 +44,19 @@ export class GameController {
   @UseGuards(JwtGuard, RolesGuard)
   @Roles(Role.ADMIN)
   @Post()
-  @HttpCode(HttpStatus.CREATED)
   @ApiBearerAuth()
   @ResponseMessage('Game created successfully')
-  createGame(@Body(ValidationPipe) request: CreateGameRequest) {
+  createGame(@Body() request: CreateGameRequest) {
     return this.gameService.createGame(request);
   }
 
   @UseGuards(JwtGuard, RolesGuard)
   @Roles(Role.ADMIN)
   @Put(':gameId')
-  @HttpCode(HttpStatus.OK)
   @ApiBearerAuth()
   @ApiParam({ name: 'gameId', example: '123e4567-e89b-12d3-a456-426614174000' })
   @ResponseMessage('Game updated successfully')
-  updateGame(@Param('gameId', ParseUUIDPipe) gameId: string, @Body(ValidationPipe) request: UpdateGameRequest) {
+  updateGame(@Param('gameId', ParseUUIDPipe) gameId: string, @Body() request: UpdateGameRequest) {
     return this.gameService.updateGame(gameId, request);
   }
 

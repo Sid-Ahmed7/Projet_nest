@@ -9,7 +9,6 @@ import {
   Post,
   Query,
   UseGuards,
-  ValidationPipe,
 } from '@nestjs/common';
 import { MatchService } from '@/match/match.service';
 import { CreateMatchRequest } from '@/match/requests/CreateMatchRequest';
@@ -42,12 +41,11 @@ export class MatchController {
   }
 
   @Post()
-  @HttpCode(HttpStatus.CREATED)
   @UseGuards(JwtGuard, RolesGuard)
   @Roles(Role.ADMIN, Role.PLAYER)
   @ApiBearerAuth()
   @ResponseMessage('Match created successfully')
-  createMatch(@Body(ValidationPipe) req: CreateMatchRequest) {
+  createMatch(@Body() req: CreateMatchRequest) {
     return this.matchService.createMatch(req);
   }
 
@@ -58,10 +56,7 @@ export class MatchController {
   @ApiBearerAuth()
   @ApiParam({ name: 'matchId', example: '123e4567-e89b-12d3-a456-426614174000' })
   @ResponseMessage('Match result submitted successfully')
-  submitMatchResult(
-    @Param('matchId', ParseUUIDPipe) matchId: string,
-    @Body(ValidationPipe) req: SubmitMatchResultRequest,
-  ) {
+  submitMatchResult(@Param('matchId', ParseUUIDPipe) matchId: string, @Body() req: SubmitMatchResultRequest) {
     return this.matchService.submitResult(matchId, req);
   }
 }
