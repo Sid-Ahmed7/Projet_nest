@@ -11,7 +11,6 @@ import {
   Put,
   Query,
   UseGuards,
-  ValidationPipe,
 } from '@nestjs/common';
 import { GameService } from './game.service';
 import { JwtGuard } from '@/auth/guards/jwt.guard';
@@ -21,7 +20,7 @@ import { Role } from '@/player/enum/role.enum';
 import { CreateGameRequest } from './requests/CreateGameRequest';
 import { UpdateGameRequest } from './requests/UpdateGameRequest';
 import { ResponseMessage } from '@/decorator/response-message.decorator';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Games')
 @Controller('games')
@@ -29,12 +28,14 @@ export class GameController {
   constructor(private readonly gameService: GameService) {}
 
   @Get()
+  @ApiQuery({ name: 'genre', required: false, example: 'MOBA' })
   @ResponseMessage('Games retrieved successfully')
   findAllGames(@Query('genre') genre?: string) {
     return this.gameService.findAllGames(genre);
   }
 
   @Get(':gameId')
+  @ApiParam({ name: 'gameId', example: '123e4567-e89b-12d3-a456-426614174000' })
   @ResponseMessage('Game retrieved successfully')
   findGameById(@Param('gameId', ParseUUIDPipe) gameId: string) {
     return this.gameService.findGameById(gameId);
@@ -43,18 +44,19 @@ export class GameController {
   @UseGuards(JwtGuard, RolesGuard)
   @Roles(Role.ADMIN)
   @Post()
-  @HttpCode(HttpStatus.CREATED)
+  @ApiBearerAuth()
   @ResponseMessage('Game created successfully')
-  createGame(@Body(ValidationPipe) request: CreateGameRequest) {
+  createGame(@Body() request: CreateGameRequest) {
     return this.gameService.createGame(request);
   }
 
   @UseGuards(JwtGuard, RolesGuard)
   @Roles(Role.ADMIN)
   @Put(':gameId')
-  @HttpCode(HttpStatus.OK)
+  @ApiBearerAuth()
+  @ApiParam({ name: 'gameId', example: '123e4567-e89b-12d3-a456-426614174000' })
   @ResponseMessage('Game updated successfully')
-  updateGame(@Param('gameId', ParseUUIDPipe) gameId: string, @Body(ValidationPipe) request: UpdateGameRequest) {
+  updateGame(@Param('gameId', ParseUUIDPipe) gameId: string, @Body() request: UpdateGameRequest) {
     return this.gameService.updateGame(gameId, request);
   }
 
@@ -62,6 +64,8 @@ export class GameController {
   @Roles(Role.ADMIN)
   @Delete(':gameId')
   @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiBearerAuth()
+  @ApiParam({ name: 'gameId', example: '123e4567-e89b-12d3-a456-426614174000' })
   @ResponseMessage('Game deleted successfully')
   deleteGame(@Param('gameId', ParseUUIDPipe) gameId: string) {
     return this.gameService.deleteGame(gameId);

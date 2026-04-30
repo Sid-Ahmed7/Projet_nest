@@ -12,7 +12,6 @@ import {
   Query,
   Request,
   UseGuards,
-  ValidationPipe,
 } from '@nestjs/common';
 import { JwtGuard } from '@/auth/guards/jwt.guard';
 import { ResponseMessage } from '@/decorator/response-message.decorator';
@@ -20,7 +19,7 @@ import { TournamentStatus } from '@/tournament/enum/tournament-status.enum';
 import { CreateTournamentRequest } from '@/tournament/requests/CreateTournamentRequest';
 import { UpdateTournamentRequest } from '@/tournament/requests/UpdateTournamentRequest';
 import { TournamentService } from '@/tournament/tournament.service';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiTags, ApiQuery, ApiParam, ApiBearerAuth } from '@nestjs/swagger';
 
 @ApiTags('Tournaments')
 @Controller('tournaments')
@@ -28,12 +27,14 @@ export class TournamentController {
   constructor(private readonly tournamentsService: TournamentService) {}
 
   @Get()
+  @ApiQuery({ name: 'status', enum: TournamentStatus, required: false })
   @ResponseMessage('Tournaments retrieved successfully')
   findAllTournaments(@Query('status') status?: TournamentStatus) {
     return this.tournamentsService.findAllTournaments(status);
   }
 
   @Get(':tournamentId')
+  @ApiParam({ name: 'tournamentId', example: '123e4567-e89b-12d3-a456-426614174000' })
   @ResponseMessage('Tournament retrieved successfully')
   findTournamentById(@Param('tournamentId', ParseUUIDPipe) tournamentId: string) {
     return this.tournamentsService.findTournamentById(tournamentId);
@@ -41,26 +42,26 @@ export class TournamentController {
 
   @UseGuards(JwtGuard)
   @Post()
-  @HttpCode(HttpStatus.CREATED)
+  @ApiBearerAuth()
   @ResponseMessage('Tournament created successfully')
-  createTournament(@Body(ValidationPipe) req: CreateTournamentRequest) {
+  createTournament(@Body() req: CreateTournamentRequest) {
     return this.tournamentsService.createTournament(req);
   }
 
   @UseGuards(JwtGuard)
   @Put(':tournamentId')
-  @HttpCode(HttpStatus.OK)
+  @ApiBearerAuth()
+  @ApiParam({ name: 'tournamentId', example: '123e4567-e89b-12d3-a456-426614174000' })
   @ResponseMessage('Tournament updated successfully')
-  updateTournament(
-    @Param('tournamentId', ParseUUIDPipe) tournamentId: string,
-    @Body(ValidationPipe) req: UpdateTournamentRequest,
-  ) {
+  updateTournament(@Param('tournamentId', ParseUUIDPipe) tournamentId: string, @Body() req: UpdateTournamentRequest) {
     return this.tournamentsService.updateTournament(tournamentId, req);
   }
 
   @UseGuards(JwtGuard)
   @Delete(':tournamentId')
   @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiBearerAuth()
+  @ApiParam({ name: 'tournamentId', example: '123e4567-e89b-12d3-a456-426614174000' })
   @ResponseMessage('Tournament deleted successfully')
   deleteTournament(@Param('tournamentId', ParseUUIDPipe) tournamentId: string) {
     return this.tournamentsService.deleteTournament(tournamentId);
@@ -69,6 +70,8 @@ export class TournamentController {
   @UseGuards(JwtGuard)
   @Post(':tournamentId/join')
   @HttpCode(HttpStatus.OK)
+  @ApiBearerAuth()
+  @ApiParam({ name: 'tournamentId', example: '123e4567-e89b-12d3-a456-426614174000' })
   @ResponseMessage('Tournament joined successfully')
   joinTournament(
     @Param('tournamentId', ParseUUIDPipe) tournamentId: string,
@@ -78,6 +81,7 @@ export class TournamentController {
   }
 
   @Get(':tournamentId/matches')
+  @ApiParam({ name: 'tournamentId', example: '123e4567-e89b-12d3-a456-426614174000' })
   @ResponseMessage('Matches retrieved successfully')
   findMatchesByTournament(@Param('tournamentId', ParseUUIDPipe) tournamentId: string) {
     return this.tournamentsService.findMatchesByTournament(tournamentId);
